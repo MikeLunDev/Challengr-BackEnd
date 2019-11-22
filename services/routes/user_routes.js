@@ -1,13 +1,15 @@
 const express = require("express");
 const User = require("../../schemas/userSchema");
-//const Profiles = require("../models/profiles");
+const Profile = require("../../schemas/profileSchema");
 const passport = require("passport");
 const { getToken } = require("../../authentication/auth");
+require("dotenv").config();
 
 const router = express.Router();
 
 router.post("/register", async (req, res) => {
   const { email, password } = req.body;
+  delete req.body.password;
   if (email === undefined || password === undefined) {
     res.statusCode = 400;
     res.json({
@@ -21,14 +23,22 @@ router.post("/register", async (req, res) => {
         password: password
       });
       newUser = await User.register(newUser, password);
+      req.body.admin =
+        email === process.env.admin1 ||
+        email === process.env.admin2 ||
+        email === process.env.admin3
+          ? true
+          : false;
+      var newProfile = await Profile.create(req.body);
       res.status(201).json({
-        status: "New user created",
+        status: "New user and profile created",
         success: true,
-        user: newUser
+        user: newUser,
+        profile: newProfile
       });
     } catch (err) {
       res.status(400).send({
-        message: "A user with the given email is already registered",
+        error: err.message,
         success: false
       });
     }
