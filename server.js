@@ -10,6 +10,7 @@ app.use(passport.initialize());
 app.set("port", process.env.PORT || 3015);
 app.use("/user", cors(), userRouter);
 let connectDbUri;
+
 switch (process.env.NODE_ENV) {
   case "test":
     connectDbUri = "mongodb://localhost:27017/testdb";
@@ -42,3 +43,5 @@ mongoose
 app.listen(app.get("port"), () => {
   console.log("running on " + app.get("port"));
 });
+
+module.exports = { app };

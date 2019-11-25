@@ -1,6 +1,6 @@
 const express = require("express");
 const User = require("../../schemas/userSchema");
-const Profile = require("../../schemas/profileSchema");
+const userProfile = require("../../schemas/userProfileSchema");
 const passport = require("passport");
 const { getToken } = require("../../authentication/auth");
 require("dotenv").config();
@@ -13,7 +13,8 @@ router.post("/register", async (req, res) => {
   if (email === undefined || password === undefined) {
     res.statusCode = 400;
     res.json({
-      status: "email or password missing",
+      status: "Something went wrong",
+      error: "Email or password missing",
       success: false
     });
   } else {
@@ -29,15 +30,17 @@ router.post("/register", async (req, res) => {
         email === process.env.admin3
           ? true
           : false;
-      var newProfile = await Profile.create(req.body);
+      var newProfile = await userProfile.create(req.body);
       res.status(201).json({
         status: "New user and profile created",
+        error: "",
         success: true,
         user: newUser,
         profile: newProfile
       });
     } catch (err) {
       res.status(400).send({
+        status: "Something went wrong",
         error: err.message,
         success: false
       });
@@ -49,7 +52,7 @@ router.post("/login", passport.authenticate("local"), (req, res) => {
   var token = getToken({
     _id: req.user._id
   });
-  res.send({ token, success: true });
+  res.send({ token, success: true, status: "Logged in successfully" });
 });
 
 router.post("/refreshToken", passport.authenticate("jwt"), (req, res) => {
