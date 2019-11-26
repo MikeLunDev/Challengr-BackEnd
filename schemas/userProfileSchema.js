@@ -6,6 +6,10 @@ const userProfile = new Schema(
     username: {
       type: String
     },
+    company: {
+      type: Boolean,
+      default: true
+    },
     email: {
       type: String,
       required: true
