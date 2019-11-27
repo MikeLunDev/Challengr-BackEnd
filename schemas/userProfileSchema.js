@@ -1,10 +1,47 @@
 const mongoose = require("mongoose");
 const Schema = mongoose.Schema;
 
+const completedChallengeSchema = new Schema({
+  challengeId: {
+    type: String,
+    required: true
+  },
+  completedAt: {
+    type: Date,
+    required: true
+  }
+});
+
+const inProgressChallengeSchema = new Schema({
+  challengeId: {
+    type: String,
+    required: true
+  },
+  completedAt: {
+    type: Date,
+    required: true
+  }
+});
+
+const uploadedChallengeSchema = new Schema({
+  challengeId: {
+    type: String,
+    required: true
+  },
+  completedAt: {
+    type: Date,
+    required: true
+  }
+});
+
 const userProfile = new Schema(
   {
     username: {
       type: String
+    },
+    company: {
+      type: Boolean,
+      default: true
     },
     email: {
       type: String,
@@ -28,10 +65,13 @@ const userProfile = new Schema(
       default: false
     },
     completedChallenge: {
-      type: Array
+      type: [completedChallengeSchema]
+    },
+    inProgressChallenge: {
+      type: [inProgressChallengeSchema]
     },
     uploadedChallenge: {
-      type: Array
+      type: [uploadedChallengeSchema]
     },
     bio: {
       type: String
