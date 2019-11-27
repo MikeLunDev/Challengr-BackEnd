@@ -50,18 +50,191 @@ router.post("/", passport.authenticate("jwt"), async (req, res) => {
   }
 });
 
+router.get("/:challengeId", passport.authenticate("jwt"), async (req, res) => {
+  try {
+    let challenge = await Challengr.findById(req.params.challengeId);
+
+    challenge != null
+      ? res.status(200).send({
+          error: "",
+          status: "Challenge found successfully",
+          success: true,
+          challenge
+        })
+      : res.status(404).send({
+          error: "Challenge not found, check if the id is correct",
+          status: "Not found",
+          success: false
+        });
+  } catch (err) {
+    res.status(500).send({
+      error: err,
+      status: "Failed to fetch",
+      success: false
+    });
+  }
+});
+
+router.put(
+  "/:challengeId/setCompleted",
+  passport.authenticate("jwt"),
+  async (req, res) => {
+    try {
+      let userProfileId = await userProfile.findOne({ email: req.user.email });
+      if (userProfileId != null) {
+        try {
+          await userProfile.findOneAndUpdate(
+            { _id: userProfileId },
+            {
+              $push: {
+                completedChallenge: {
+                  challengeId: req.params.challengeId,
+                  completedAt: new Date()
+                }
+              }
+            },
+            { new: true }
+          );
+          res.status(200).send({
+            error: "",
+            success: true,
+            status: "correctly added to profile"
+          });
+        } catch (err) {
+          res.status(500).send({
+            error: err,
+            status:
+              "Failed to set challenge completed on user w/ id " + req.user._id,
+            success: false
+          });
+        }
+      } else {
+        res.status(500).send({
+          error: err,
+          status:
+            "Failed to set challenge completed on user w/ id " + req.user._id,
+          success: false
+        });
+      }
+    } catch (err) {
+      res.status(500).send({
+        error: err,
+        status:
+          "Failed to set challenge completed on user w/ id " + req.user._id,
+        success: false
+      });
+    }
+  }
+);
+
+router.put(
+  "/:challengeId/setInProgress",
+  passport.authenticate("jwt"),
+  async (req, res) => {
+    try {
+      let userProfileId = await userProfile.findOne({ email: req.user.email });
+      if (userProfileId != null) {
+        try {
+          await userProfile.findOneAndUpdate(
+            { _id: userProfileId },
+            {
+              $push: {
+                inProgressChallenge: {
+                  challengeId: req.params.challengeId,
+                  completedAt: new Date()
+                }
+              }
+            },
+            { new: true }
+          );
+          res.status(200).send({
+            error: "",
+            success: true,
+            status: "correctly added to profile"
+          });
+        } catch (err) {
+          res.status(500).send({
+            error: err,
+            status:
+              "Failed to set challenge in progress on user w/ id " +
+              req.user._id,
+            success: false
+          });
+        }
+      } else {
+        res.status(500).send({
+          error: err,
+          status:
+            "Failed to set challenge in progress on user w/ id " + req.user._id,
+          success: false
+        });
+      }
+    } catch (err) {
+      res.status(500).send({
+        error: err,
+        status:
+          "Failed to set challenge in progress on user w/ id " + req.user._id,
+        success: false
+      });
+    }
+  }
+);
+
+router.put(
+  "/:challengeId/setUploaded",
+  passport.authenticate("jwt"),
+  async (req, res) => {
+    try {
+      let userProfileId = await userProfile.findOne({ email: req.user.email });
+      if (userProfileId != null) {
+        try {
+          await userProfile.findOneAndUpdate(
+            { _id: userProfileId },
+            {
+              $push: {
+                uploadedChallenge: {
+                  challengeId: req.params.challengeId,
+                  completedAt: new Date()
+                }
+              }
+            },
+            { new: true }
+          );
+          res.status(200).send({
+            error: "",
+            success: true,
+            status: "correctly added to profile"
+          });
+        } catch (err) {
+          res.status(500).send({
+            error: err,
+            status:
+              "Failed to set uploaded challenge on user w/ id " + req.user._id,
+            success: false
+          });
+        }
+      } else {
+        res.status(500).send({
+          error: err,
+          status:
+            "Failed to set uploaded challenge on user w/ id " + req.user._id,
+          success: false
+        });
+      }
+    } catch (err) {
+      res.status(500).send({
+        error: err,
+        status:
+          "Failed to set uploaded challenge on user w/ id " + req.user._id,
+        success: false
+      });
+    }
+  }
+);
+
 router.get("/", async (req, res) => {
-  //filter difficulty, languages, type(n block)
-  //filter[difficulty]=3&filter[languages]=NodeJs&filter[languages]=Javascript&filter[types]=quizId
-  //sorting upvotes rating date
-  //?sort[date,upvotes,difficulty]=asc/desc
-  //?sort[date]=asc&limit
-  //&skip=0 //inizio della riga
-  //&limit = 8 //fine riga
   //{ $and: [ {languages:{$in:["NodeJs"]}},{difficulty:3},{'content.resourceType':{$in:["quizI"]}}  ] } final working
-  //{$and:[ { languages: { '$in': ["Javascript"] } },{ difficulty: '1' },{ 'content.resourceType': { '$in': ["quizId"] } } ]}
-  //{$and:[ { languages: { $in: ["NodeJs"] } },{ difficulty: 1 },{ 'content.resourceType': { $in: ["quizId"] } } ]}
-  ///challenge?filter[difficulty]=3&filter[languages]=javascript&filter[languages]=nodejs&filter[types]=quizId for try
+  ///challenge?filter[difficulty]=3&filter[languages]=javascript&filter[languages]=nodejs&filter[types]=quizId for try in postman
 
   try {
     const { skip, limit, filter, sort } = req.query;
@@ -122,5 +295,45 @@ router.get("/", async (req, res) => {
     console.log(err);
   }
 });
+
+router.delete(
+  "/:challengeId",
+  passport.authenticate("jwt"),
+  async (req, res) => {
+    let challenge = await Challengr.findById(req.params.challengeId);
+    let profile = await userProfile.findOne({ email: req.user.email });
+    let isCreatedByUser = profile.uploadedChallenge.filter(
+      el => el.challengeId === req.params.challengeId
+    );
+    if (
+      profile != null &&
+      challenge != null &&
+      (isCreatedByUser.length === 1 || profile.admin === true)
+    ) {
+      try {
+        let deleted = await Challengr.findByIdAndDelete(req.params.challengeId);
+        res.status(200).send({
+          error: "",
+          status: "Deleted successfully",
+          success: true,
+          deleted
+        });
+      } catch (err) {
+        res.status(500).send({
+          error: err,
+          status: "Failed to delete",
+          success: false
+        });
+      }
+    } else {
+      res.status(400).send({
+        error:
+          "Incorrect data (challenge id, or challenge do not exist ) or unauthorized operation => User can only delete own challenge",
+        status: "Failed to delete",
+        success: false
+      });
+    }
+  }
+);
 
 module.exports = router;
