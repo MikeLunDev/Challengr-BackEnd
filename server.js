@@ -3,6 +3,7 @@ const cors = require("cors");
 const mongoose = require("mongoose");
 const userRouter = require("./services/routes/user_routes");
 const challengrRouter = require("./services/routes/challengr_routes");
+const quizRouter = require("./services/routes/quiz_routes");
 const passport = require("passport");
 
 const app = express();
@@ -11,6 +12,7 @@ app.use(passport.initialize());
 app.set("port", process.env.PORT || 3015);
 app.use("/user", cors(), userRouter);
 app.use("/challenge", cors(), challengrRouter);
+app.use("/quiz", cors(), quizRouter);
 let connectDbUri;
 
 switch (process.env.NODE_ENV) {
