@@ -5,10 +5,15 @@ const userRouter = require("./services/routes/user_routes");
 const challengrRouter = require("./services/routes/challengr_routes");
 const quizRouter = require("./services/routes/quiz_routes");
 const passport = require("passport");
+const { join } = require("path");
 
 const app = express();
 app.use(express.json());
 app.use(passport.initialize());
+app.use(
+  "/question_images/",
+  express.static(join(__dirname, "./public/question_images"))
+);
 app.set("port", process.env.PORT || 3015);
 app.use("/user", cors(), userRouter);
 app.use("/challenge", cors(), challengrRouter);

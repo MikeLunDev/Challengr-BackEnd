@@ -4,6 +4,8 @@ const companyProfile = require("../../schemas/companyProfileSchema");
 const Challengr = require("../../schemas/challengrSchema");
 const Quiz = require("../../schemas/quizSchema");
 const passport = require("passport");
+const multer = require("multer");
+const fs = require("fs-extra");
 require("dotenv").config();
 
 const router = express.Router();
@@ -96,5 +98,55 @@ router.delete("/:quizId", passport.authenticate("jwt"), async (req, res) => {
     });
   }
 });
+
+const upload = multer({});
+router.post(
+  "/upload_question_images",
+  passport.authenticate("jwt"),
+  upload.single("question_images"),
+  async (req, res) => {
+    var fullUrl = req.protocol + "://" + req.get("host") + "/question_images/";
+    if (req.file != undefined) {
+      var ext = req.file.originalname.split(".").reverse()[0];
+      if (ext !== "png" && ext !== "jpg" && ext !== "gif" && ext !== "jpeg") {
+        res.status(400).send({
+          error: "only images allowed",
+          status: "Failed to upload",
+          success: false
+        });
+      } else {
+        let date = new Date();
+        var fileName = `${req.user._id}${date
+          .toString()
+          .split(" ")
+          .join("")
+          .slice(3, 23)
+          .replace(/:/g, "")}.${ext}`;
+        var path = "./public/question_images/" + fileName;
+        try {
+          await fs.writeFile(path, req.file.buffer);
+          res.status(201).send({
+            error: "",
+            status: "Downloadable link created successfully",
+            success: true,
+            imageLink: fullUrl + fileName
+          });
+        } catch (err) {
+          res.status(500).send({
+            error: err,
+            status: "Failed to save the file on disk",
+            success: false
+          });
+        }
+      }
+    } else {
+      res.status(400).send({
+        error: "File missing",
+        status: "Not uploaded",
+        success: false
+      });
+    }
+  }
+);
 
 module.exports = router;
