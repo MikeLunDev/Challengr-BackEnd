@@ -11,6 +11,10 @@ const { join } = require("path");
 const app = express();
 app.use(express.json());
 app.use(passport.initialize());
+app.use(
+  "/question_images/",
+  express.static(join(__dirname, "./public/question_images"))
+);
 app.use("/demo_pdf/", express.static(join(__dirname, "./public/demo_pdf")));
 app.set("port", process.env.PORT || 3015);
 app.use("/user", cors(), userRouter);
