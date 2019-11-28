@@ -5,13 +5,17 @@ const userRouter = require("./services/routes/user_routes");
 const challengrRouter = require("./services/routes/challengr_routes");
 const quizRouter = require("./services/routes/quiz_routes");
 const passport = require("passport");
+const demoChallengeRouter = require("./services/routes/demo_routes");
+const { join } = require("path");
 
 const app = express();
 app.use(express.json());
 app.use(passport.initialize());
+app.use("/demo_pdf/", express.static(join(__dirname, "./public/demo_pdf")));
 app.set("port", process.env.PORT || 3015);
 app.use("/user", cors(), userRouter);
 app.use("/challenge", cors(), challengrRouter);
+app.use("/demoChallenge", cors(), demoChallengeRouter);
 app.use("/quiz", cors(), quizRouter);
 let connectDbUri;
 
