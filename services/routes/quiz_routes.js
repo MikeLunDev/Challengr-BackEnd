@@ -40,7 +40,7 @@ router.post("/", passport.authenticate("jwt"), async (req, res) => {
         error: "",
         status: "New quiz created successfully",
         success: true,
-        quizId: newQuiz._id
+        content: { resourceType: "quizId", value: newQuiz._id }
       });
     } catch (err) {
       res.status(500).send({
