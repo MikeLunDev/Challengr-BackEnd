@@ -41,7 +41,9 @@ const uploadedChallengeSchema = new Schema({
 const userProfile = new Schema(
   {
     username: {
-      type: String
+      type: String,
+      required: true,
+      unique: true
     },
     company: {
       type: Boolean,
@@ -52,10 +54,12 @@ const userProfile = new Schema(
       required: true
     },
     name: {
-      type: String
+      type: String,
+      required: true
     },
     surname: {
-      type: String
+      type: String,
+      required: true
     },
     prefLanguage: {
       type: String

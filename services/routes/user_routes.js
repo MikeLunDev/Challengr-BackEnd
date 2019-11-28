@@ -39,7 +39,7 @@ router.post("/register", async (req, res) => {
         profile: newProfile
       });
     } catch (err) {
-      res.status(400).send({
+      res.status(500).send({
         status: "Something went wrong",
         error: err.message,
         success: false
