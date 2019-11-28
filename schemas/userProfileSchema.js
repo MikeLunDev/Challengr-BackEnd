@@ -17,9 +17,13 @@ const inProgressChallengeSchema = new Schema({
     type: String,
     required: true
   },
-  completedAt: {
+  lastSubmitAt: {
     type: Date,
     required: true
+  },
+  quizScore: {
+    type: Number,
+    min: 0
   }
 });
 
