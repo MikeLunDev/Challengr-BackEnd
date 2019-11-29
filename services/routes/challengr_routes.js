@@ -141,7 +141,9 @@ router.put(
               $push: {
                 inProgressChallenge: {
                   challengeId: req.params.challengeId,
-                  completedAt: new Date()
+                  lastSubmitAt: new Date(),
+                  quizScore: req.body.quizScore,
+                  demoRepoLink: req.body.repoLink
                 }
               }
             },

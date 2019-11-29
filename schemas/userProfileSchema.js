@@ -23,7 +23,11 @@ const inProgressChallengeSchema = new Schema({
   },
   quizScore: {
     type: Number,
-    min: 0
+    min: 0,
+    required: true
+  },
+  demoChallengeLink: {
+    type: String
   }
 });
 
