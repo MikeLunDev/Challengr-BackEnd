@@ -87,6 +87,28 @@ const userProfile = new Schema(
     },
     bio: {
       type: String
+    },
+    privacySettings: {
+      showChallengeCompleted: {
+        type: Boolean,
+        default: true,
+        required: true
+      },
+      showChallengeUploaded: {
+        type: Boolean,
+        default: true,
+        required: true
+      },
+      showGithubLink: {
+        type: Boolean,
+        default: true,
+        required: true
+      },
+      showBio: {
+        type: Boolean,
+        default: true,
+        required: true
+      }
     }
   },
   { timestamps: true }
