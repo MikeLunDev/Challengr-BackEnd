@@ -286,13 +286,15 @@ router.get("/", async (req, res) => {
         .limit(parseInt(limit))
         .skip(parseInt(skip))
         .sort(sort);
-    } else
+      var numberOfChallenges = await Challengr.find({ $and: queryArray });
+    } else {
       var challenges = await Challengr.find({})
         .limit(parseInt(limit))
         .skip(parseInt(skip))
         .sort(sort);
-    const numberOfChallenges = challenges.length;
-    res.send({ challenges, numberOfChallenges });
+      var numberOfChallenges = await Challengr.find({});
+    }
+    res.send({ challenges, numberOfChallenges: numberOfChallenges.length });
   } catch (err) {
     console.log(err);
   }
