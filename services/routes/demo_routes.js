@@ -62,7 +62,7 @@ router.post("/", passport.authenticate("jwt"), async (req, res, next) => {
         status: "Demo created Successfully",
         success: true,
         demoChallenge,
-        demoId: demoChallenge._id
+        content: { resourceType: "demoId", value: demoChallenge._id } 
       });
     } catch (err) {
       res.status(500).send({

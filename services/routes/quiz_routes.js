@@ -14,6 +14,33 @@ router.get("/all", async (req, res) => {
   res.send(await Quiz.find({}));
 });
 
+router.get("/:quizId", passport.authenticate("jwt"), async(req,res)=>{
+  try{
+    let quiz = await Quiz.findById(req.params.quizId)
+    if(quiz != null){
+      res.status(200).send({
+        error: "",
+        status: "Quiz found",
+        success: true,
+        quiz
+      });
+    }else {
+      res.status(404).send({
+        error: "Not found. Check if the id is correct",
+        status: "Couldn't find the quiz",
+        success: false
+      });
+    }
+
+  }catch(err){
+    res.status(500).send({
+      error: err.message,
+      status: "Couldn't find the quiz",
+      success: false
+    });
+  }
+})
+
 router.post("/", passport.authenticate("jwt"), async (req, res) => {
   const { username, email } = await userProfile.findOne({
     email: req.user.email
