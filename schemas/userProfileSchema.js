@@ -51,7 +51,10 @@ const userProfile = new Schema(
     },
     company: {
       type: Boolean,
-      default: true
+      default: false
+    },
+    githubProfile: {
+      type: String
     },
     email: {
       type: String,

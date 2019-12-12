@@ -13,7 +13,7 @@ router.post("/register", async (req, res) => {
   if (email === undefined || password === undefined) {
     res.statusCode = 400;
     res.json({
-      status: "Something went wrong",
+      status: "Missing fields, couldn't procede.",
       error: "Email or password missing",
       success: false
     });
