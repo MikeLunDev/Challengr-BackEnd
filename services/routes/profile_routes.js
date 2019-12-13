@@ -34,7 +34,7 @@ router.get("/:profileId", passport.authenticate("jwt"), async (req, res) => {
   }
 });
 
-router.get("/me", passport.authenticate("jwt"), async (req, res) => {
+router.get("/personal/me", passport.authenticate("jwt"), async (req, res) => {
   try {
     let profileMe = await userProfile.findOne({ email: req.user.email });
     if (profileMe != null) {

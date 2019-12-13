@@ -5,6 +5,7 @@ const userRouter = require("./services/routes/user_routes");
 const challengrRouter = require("./services/routes/challengr_routes");
 const quizRouter = require("./services/routes/quiz_routes");
 const passport = require("passport");
+const profileRouter = require("./services/routes/profile_routes");
 const demoChallengeRouter = require("./services/routes/demo_routes");
 const { join } = require("path");
 
@@ -18,6 +19,7 @@ app.use(
 app.use("/demo_pdf/", express.static(join(__dirname, "./public/demo_pdf")));
 app.set("port", process.env.PORT || 3015);
 app.use("/user", cors(), userRouter);
+app.use("/profile", cors(), profileRouter);
 app.use("/challenge", cors(), challengrRouter);
 app.use("/demoChallenge", cors(), demoChallengeRouter);
 app.use("/quiz", cors(), quizRouter);
